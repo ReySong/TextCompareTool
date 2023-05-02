@@ -116,8 +116,8 @@ export const Upload = (
 
         if (sourceType === SourceType.SOURCE) {
           const newFileList = fileListMinus(fileList, srcFileList);
-          updateSrcFileList(fileList);
-          updateSrcTreeData(transferFileListToTreeNode(fileList));
+          updateSrcFileList(newFileList);
+          updateSrcTreeData(transferFileListToTreeNode(newFileList));
         } else {
           const newFileList = fileListMinus(fileList, dstFileList);
           updateDstFileList(newFileList);
