@@ -17,4 +17,6 @@ export interface DiffInfo {
   str: string;
 }
 
+export type Mode = "char" | "line";
+
 export type UploadType = "text" | "file" | "directory";

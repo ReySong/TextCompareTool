@@ -26,6 +26,7 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
     const getFileContents = async (fileArr: (File | undefined)[]) => {
       return Promise.all(
         fileArr.map((file) => {
+          if (!file) return "";
           const reader = new FileReader();
           try {
             return new Promise<string>((resolve) => {
@@ -44,8 +45,6 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
 
     getFileContents([srcFile?.originFileObj, dstFile?.originFileObj]).then(
       ([srcFileContent, dstFileContent]) => {
-        console.log("srcFileContent:", srcFileContent);
-        console.log("dstFileContent:", dstFileContent);
         setDiffStrFromFile(renderDiffStr(srcFileContent, dstFileContent));
       }
     );

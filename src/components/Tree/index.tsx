@@ -29,7 +29,6 @@ export const Tree = (
       const curFile = srcFileList.find((file) => {
         return file.uid === selectedKeys[0]?.toString();
       });
-      console.log("curFile:", curFile);
       updateSrcFile(curFile!);
     } else {
       const curFile = dstFileList.find((file) => {

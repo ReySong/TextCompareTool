@@ -95,6 +95,7 @@ export const Upload = (
         else updateDstFile(file);
       } else if (displayType === "directory") {
         setShouldDisplayUpload(!shouldDisplayUpload);
+
         if (sourceType === SourceType.SOURCE) {
           updateSrcFileList(fileList);
           updateSrcTreeData(transferFileListToTreeNode(fileList));

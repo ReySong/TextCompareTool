@@ -8,7 +8,7 @@ import {
 } from "antd";
 
 import { Upload, Tree } from "@/components";
-import { useDirectoryStore } from "@/store";
+import { useFileStore } from "@/store";
 import { SourceType } from "@/enum";
 
 import type { UploadType } from "@/type";
@@ -22,6 +22,7 @@ export const OperateArea = (props: {
   const { displayType, setDisplayType } = props;
   const [shouldDisplaySrcUpload, setShouldDisplaySrcUpload] = useState(true);
   const [shouldDisplayDstUpload, setShouldDisplayDstUpload] = useState(true);
+  const [removeAllFiles] = useFileStore((state) => [state.removeAllFiles]);
 
   const getDisplay = (name: string) => {
     if (displayType === "text") return "none";
@@ -63,6 +64,7 @@ export const OperateArea = (props: {
           <ADRadio.Group
             defaultValue={"text"}
             onChange={(e) => {
+              removeAllFiles();
               setDisplayType(() => e.target?.value);
             }}>
             <ADRadio.Button value={"text"}>在线文本比较</ADRadio.Button>

@@ -1,38 +1,73 @@
-import type { VK, VD, DiffInfo, Snake } from "@/type";
+import type { VK, VD, DiffInfo, Snake, Mode } from "@/type";
 
-export function myersDiff(src: string, dst: string) {
-  const n = src.length,
-    m = dst.length;
-  let d: number, k: number;
-  //  记录每一个 k 能够到达的最远 x 值
-  const vk = {
-    "1": 0,
-  } as VK;
-  //  记录 d 步长所有 k 能够到达的最远 x 值
-  const vd = {
-    "0": { "1": 0 },
-  } as VD;
-  for (d = 0; d <= n + m; ++d) {
-    let x: number, y: number;
-    const vTmp = {} as VK;
-    for (k = -d; k <= d; k += 2) {
-      if (k === -d || (k !== d && vk[k - 1] < vk[k + 1])) x = vk[k + 1];
-      else x = vk[k - 1] + 1;
-      y = x - k;
-      while (x < n && y < m && src[x] === dst[y]) {
-        ++x;
-        ++y;
+export function myersDiff(src: string, dst: string, mode: Mode = "char") {
+  if (mode === "char") {
+    const n = src.length,
+      m = dst.length;
+    let d: number, k: number;
+    //  记录每一个 k 能够到达的最远 x 值
+    const vk = {
+      "1": 0,
+    } as VK;
+    //  记录 d 步长所有 k 能够到达的最远 x 值
+    const vd = {
+      "0": { "1": 0 },
+    } as VD;
+    for (d = 0; d <= n + m; ++d) {
+      let x: number, y: number;
+      const vTmp = {} as VK;
+      for (k = -d; k <= d; k += 2) {
+        if (k === -d || (k !== d && vk[k - 1] < vk[k + 1])) x = vk[k + 1];
+        else x = vk[k - 1] + 1;
+        y = x - k;
+        while (x < n && y < m && src[x] === dst[y]) {
+          ++x;
+          ++y;
+        }
+        vk[k] = x;
+        vTmp[k] = x;
+        if (x === n && y === m) {
+          vd[d] = vTmp;
+          return genDiffStr(genSnakes(vd, n, m, d), src, dst);
+        }
       }
-      vk[k] = x;
-      vTmp[k] = x;
-      if (x === n && y === m) {
-        vd[d] = vTmp;
-        return genDiffStr(genSnakes(vd, n, m, d), src, dst);
-      }
+      vd[d] = vTmp;
     }
-    vd[d] = vTmp;
+    return genDiffStr(genSnakes(vd, n, m, d), src, dst);
+  } else if (mode === "line") {
+    const n = src.length,
+      m = dst.length;
+    let d: number, k: number;
+    //  记录每一个 k 能够到达的最远 x 值
+    const vk = {
+      "1": 0,
+    } as VK;
+    //  记录 d 步长所有 k 能够到达的最远 x 值
+    const vd = {
+      "0": { "1": 0 },
+    } as VD;
+    for (d = 0; d <= n + m; ++d) {
+      let x: number, y: number;
+      const vTmp = {} as VK;
+      for (k = -d; k <= d; k += 2) {
+        if (k === -d || (k !== d && vk[k - 1] < vk[k + 1])) x = vk[k + 1];
+        else x = vk[k - 1] + 1;
+        y = x - k;
+        while (x < n && y < m && src[x] === dst[y]) {
+          ++x;
+          ++y;
+        }
+        vk[k] = x;
+        vTmp[k] = x;
+        if (x === n && y === m) {
+          vd[d] = vTmp;
+          return genDiffStr(genSnakes(vd, n, m, d), src, dst);
+        }
+      }
+      vd[d] = vTmp;
+    }
+    return genDiffStr(genSnakes(vd, n, m, d), src, dst);
   }
-  return genDiffStr(genSnakes(vd, n, m, d), src, dst);
 }
 
 function genSnakes(vd: VD, n: number, m: number, d: number) {
