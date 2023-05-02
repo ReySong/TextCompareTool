@@ -5,15 +5,17 @@ import type { UploadFile } from "antd";
 type FileState = {
   srcFile: UploadFile | null;
   dstFile: UploadFile | null;
-  updateSrcFile: (inputFile: UploadFile) => void;
-  updateDstFile: (inputFile: UploadFile) => void;
+  updateSrcFile: (inputFile: UploadFile | null) => void;
+  updateDstFile: (inputFile: UploadFile | null) => void;
   removeAllFiles: () => void;
 };
 
 export const useFileStore = create<FileState>((set) => ({
   srcFile: null,
   dstFile: null,
-  updateSrcFile: (inputFile: UploadFile) => set(() => ({ srcFile: inputFile })),
-  updateDstFile: (inputFile: UploadFile) => set(() => ({ dstFile: inputFile })),
+  updateSrcFile: (inputFile: UploadFile | null) =>
+    set(() => ({ srcFile: inputFile })),
+  updateDstFile: (inputFile: UploadFile | null) =>
+    set(() => ({ dstFile: inputFile })),
   removeAllFiles: () => set(() => ({ srcFile: null, dstFile: null })),
 }));

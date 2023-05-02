@@ -125,10 +125,7 @@ export const OperateArea = (props: {
                 }}>
                 重新上传源文件夹
               </ADButton>
-              <Tree
-                sourceType={SourceType.SOURCE}
-                defaultExpandedKeys={["0-0-0"]}
-              />
+              <Tree sourceType={SourceType.SOURCE} />
               <ADDivider />
             </div>
 
@@ -164,10 +161,7 @@ export const OperateArea = (props: {
                 }}>
                 重新上传目标文件夹
               </ADButton>
-              <Tree
-                sourceType={SourceType.DESTINATION}
-                defaultExpandedKeys={["0-0-0"]}
-              />
+              <Tree sourceType={SourceType.DESTINATION} />
             </div>
           </div>
         )}

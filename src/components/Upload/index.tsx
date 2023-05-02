@@ -12,6 +12,7 @@ import type {
 import type { DataNode as ADDataNode } from "antd/es/tree";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import type { UploadType } from "@/type";
+import { fileListMinus } from "@/utils";
 
 const { Dragger } = ADUpload;
 
@@ -33,10 +34,14 @@ export const Upload = (
     shouldDisplayUpload,
     setShouldDisplayUpload,
   } = props;
-  const [updateSrcFile, updateDstFile] = useFileStore((state) => [
-    state.updateSrcFile,
-    state.updateDstFile,
-  ]);
+  const [srcFile, dstFile, updateSrcFile, updateDstFile, removeAllFiles] =
+    useFileStore((state) => [
+      state.srcFile,
+      state.dstFile,
+      state.updateSrcFile,
+      state.updateDstFile,
+      state.removeAllFiles,
+    ]);
   const [srcFileList, dstFileList, updateSrcFileList, updateDstFileList] =
     useDirectoryStore((state) => [
       state.srcFileList,
@@ -78,8 +83,13 @@ export const Upload = (
   };
 
   const customRequest = (options: UploadRequestOption) => {
-    const { onSuccess } = options;
-    onSuccess?.("上传成功");
+    const { file, onSuccess, onError } = options;
+    if (file) onSuccess?.("上传成功");
+    else onError?.(new Error("上传失败"));
+  };
+
+  const onBeforeUpload = () => {
+    removeAllFiles();
   };
 
   const onUploadChange: (info: UploadChangeParam) => void = ({
@@ -88,29 +98,48 @@ export const Upload = (
   }) => {
     const { originFileObj } = file;
 
+    //  仅用于上传单个文件时判断
+    const isRemoveWhenFile = fileList.length === 0;
+    let isRemoveWhenDirectory = false;
+    if (sourceType === SourceType.SOURCE)
+      isRemoveWhenDirectory = srcFileList.length > fileList.length;
+    else isRemoveWhenDirectory = dstFileList.length > fileList.length;
+
     if (originFileObj) {
       if (displayType === "file") {
-        //  只支持上传文件时
+        if (isRemoveWhenFile) return;
         if (sourceType === SourceType.SOURCE) updateSrcFile(file);
         else updateDstFile(file);
       } else if (displayType === "directory") {
-        setShouldDisplayUpload(!shouldDisplayUpload);
+        if (!isRemoveWhenDirectory)
+          setShouldDisplayUpload(!shouldDisplayUpload);
 
         if (sourceType === SourceType.SOURCE) {
+          const newFileList = fileListMinus(fileList, srcFileList);
           updateSrcFileList(fileList);
           updateSrcTreeData(transferFileListToTreeNode(fileList));
         } else {
-          updateDstFileList(fileList);
-          updateDstTreeData(transferFileListToTreeNode(fileList));
+          const newFileList = fileListMinus(fileList, dstFileList);
+          updateDstFileList(newFileList);
+          updateDstTreeData(transferFileListToTreeNode(newFileList));
         }
       }
     }
   };
 
-  return displayType !== "directory" ? (
+  const onUploadRemove = (file: UploadFile) => {
+    if (sourceType === SourceType.SOURCE) {
+      if (file.uid === srcFile?.uid) updateSrcFile(null);
+    } else {
+      if (file.uid === dstFile?.uid) updateDstFile(null);
+    }
+  };
+
+  return displayType === "file" ? (
     <Dragger
-      action="localhost:/"
+      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
+      onRemove={onUploadRemove}
       customRequest={customRequest}>
       <p className="ant-upload-drag-icon">
         <InboxOutlined />
@@ -120,12 +149,13 @@ export const Upload = (
     </Dragger>
   ) : (
     <Dragger
-      action="localhost:/"
+      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
+      onRemove={onUploadRemove}
       customRequest={customRequest}
       fileList={sourceType === SourceType.SOURCE ? srcFileList : dstFileList}
-      multiple={true}
-      directory={true}>
+      directory={true}
+      showUploadList={false}>
       <p className="ant-upload-drag-icon">
         <InboxOutlined />
       </p>

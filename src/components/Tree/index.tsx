@@ -39,13 +39,10 @@ export const Tree = (
   };
 
   return (
-    <div>
-      <ADTree
-        showLine={true}
-        defaultExpandParent
-        onSelect={onSelect}
-        treeData={sourceType === SourceType.SOURCE ? srcTreeData : dstTreeData}
-      />
-    </div>
+    <ADTree
+      showLine={true}
+      onSelect={onSelect}
+      treeData={sourceType === SourceType.SOURCE ? srcTreeData : dstTreeData}
+    />
   );
 };
