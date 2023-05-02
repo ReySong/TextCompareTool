@@ -1,26 +1,39 @@
 {
-  "name": "sub-git",
+  "name": "text-compare-tool",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "electron/main/index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-win": "electron-packager . TextCompareTool --platform=win32 --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.ico",
+    "build-linux": "electron-packager . TextCompareTool --platform=linux --electron-version=10.0.0 -no-sandbox --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.png",
+    "build-mac": "electron-packager . TextCompareTool --platform=darwin --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.ico"
   },
   "dependencies": {
-    "less": "^4.1.3",
+    "@ant-design/icons": "^4.8.0",
+    "antd": "^5.0.6",
+    "esbuild": "^0.16.4",
+    "http": "^0.0.1-security",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "vite-plugin-electron": "^0.10.4"
+    "vite-plugin-electron": "^0.10.4",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.194",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
     "electron": "^22.0.0",
+    "electron-packager": "^17.1.1",
+    "less": "^4.1.3",
+    "rc-upload": "^4.3.4",
     "typescript": "^4.6.4",
     "vite": "^3.2.3",
     "vite-plugin-electron-renderer": "^0.11.3"
-  }
+  },
+  "author": "Reysong"
 }

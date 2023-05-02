@@ -4,6 +4,8 @@ const path = require("path");
 
 const createWindow = () => {
   const win = new BrowserWindow({
+    width: 1000,
+    height: 600,
     webPreferences: {
       contextIsolation: true, // 是否开启隔离上下文
       nodeIntegration: true, // 渲染进程使用Node API
