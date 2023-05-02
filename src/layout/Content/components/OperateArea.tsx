@@ -104,7 +104,6 @@ export const OperateArea = (props: {
                 displayType={displayType}
                 uploadHint={uploadHint}
                 uploadText={uploadText}
-                shouldDisplayUpload={shouldDisplaySrcUpload}
                 setShouldDisplayUpload={setShouldDisplaySrcUpload}
                 directory={displayType === "directory"}>
                 <p className="ant-upload-drag-icon">
@@ -141,7 +140,6 @@ export const OperateArea = (props: {
                 displayType={displayType}
                 uploadHint={uploadHint}
                 uploadText={uploadText}
-                shouldDisplayUpload={shouldDisplayDstUpload}
                 setShouldDisplayUpload={setShouldDisplayDstUpload}
                 directory={displayType === "directory"}>
                 <p className="ant-upload-drag-icon">

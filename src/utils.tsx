@@ -15,18 +15,24 @@ export function renderDiffStr(src: string, dst: string) {
 }
 
 //  由于上传文件夹时，每一个文件都会触发一次 onChange，但是清除上次上传的文件只需要清除一次，所以设置一个缓存
-let minusCache = {} as any;
+// let minusCache = {} as any;
 export const fileListMinus = (
   subtrahendFileList: UploadFile[] | undefined,
   minuendFileList: UploadFile[] | undefined
 ) => {
   if (!subtrahendFileList) return [];
   if (!minuendFileList) return subtrahendFileList;
-  const subtrahendFileListString = subtrahendFileList.toString();
-  const cache = minusCache[subtrahendFileListString];
-  if (cache) return cache;
-  //  下一次文件夹上传时将缓存清除
-  else minusCache = {};
+  // const cache =
+  //   minusCache[
+  //     subtrahendFileList
+  //       .map((file) => {
+  //         return file.uid;
+  //       })
+  //       .join(",")
+  //   ];
+  // if (cache) return cache;
+  // //  下一次文件夹上传时将缓存清除
+  // else minusCache = {};
 
   const res = [] as UploadFile[];
   for (let subtrahendFile of subtrahendFileList) {
@@ -39,6 +45,12 @@ export const fileListMinus = (
       res.push(subtrahendFile);
     }
   }
-  minusCache[subtrahendFileList.toString()] = res;
+  // minusCache[
+  //   subtrahendFileList
+  //     .map((file) => {
+  //       return file.uid;
+  //     })
+  //     .join(",")
+  // ] = res;
   return res;
 };

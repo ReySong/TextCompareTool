@@ -13,6 +13,7 @@ import type { DataNode as ADDataNode } from "antd/es/tree";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import type { UploadType } from "@/type";
 import { fileListMinus } from "@/utils";
+import { useEffect, useState } from "react";
 
 const { Dragger } = ADUpload;
 
@@ -22,7 +23,6 @@ export const Upload = (
     sourceType: SourceType;
     uploadText: string;
     uploadHint: string;
-    shouldDisplayUpload: boolean;
     setShouldDisplayUpload: React.Dispatch<React.SetStateAction<boolean>>;
   }
 ) => {
@@ -31,9 +31,9 @@ export const Upload = (
     sourceType,
     uploadHint,
     uploadText,
-    shouldDisplayUpload,
     setShouldDisplayUpload,
   } = props;
+  const [newFileList, setNewFileList] = useState<UploadFile[]>([]);
   const [srcFile, dstFile, updateSrcFile, updateDstFile, removeAllFiles] =
     useFileStore((state) => [
       state.srcFile,
@@ -100,10 +100,11 @@ export const Upload = (
 
     //  仅用于上传单个文件时判断
     const isRemoveWhenFile = fileList.length === 0;
+
     let isRemoveWhenDirectory = false;
     if (sourceType === SourceType.SOURCE)
-      isRemoveWhenDirectory = srcFileList.length > fileList.length;
-    else isRemoveWhenDirectory = dstFileList.length > fileList.length;
+      isRemoveWhenDirectory = srcFileList.length > newFileList.length;
+    else isRemoveWhenDirectory = dstFileList.length > newFileList.length;
 
     if (originFileObj) {
       if (displayType === "file") {
@@ -111,18 +112,8 @@ export const Upload = (
         if (sourceType === SourceType.SOURCE) updateSrcFile(file);
         else updateDstFile(file);
       } else if (displayType === "directory") {
-        if (!isRemoveWhenDirectory)
-          setShouldDisplayUpload(!shouldDisplayUpload);
-
-        if (sourceType === SourceType.SOURCE) {
-          const newFileList = fileListMinus(fileList, srcFileList);
-          updateSrcFileList(newFileList);
-          updateSrcTreeData(transferFileListToTreeNode(newFileList));
-        } else {
-          const newFileList = fileListMinus(fileList, dstFileList);
-          updateDstFileList(newFileList);
-          updateDstTreeData(transferFileListToTreeNode(newFileList));
-        }
+        setNewFileList(fileList);
+        if (!isRemoveWhenDirectory) setShouldDisplayUpload(false);
       }
     }
   };
@@ -134,6 +125,19 @@ export const Upload = (
       if (file.uid === dstFile?.uid) updateDstFile(null);
     }
   };
+
+  useEffect(() => {
+    if (sourceType === SourceType.SOURCE) {
+      const res = fileListMinus(newFileList, srcFileList);
+      updateSrcFileList(res);
+      updateSrcTreeData(transferFileListToTreeNode(res));
+    } else {
+      const res = fileListMinus(newFileList, dstFileList);
+      updateDstFileList(res);
+      updateDstTreeData(transferFileListToTreeNode(res));
+    }
+    setNewFileList(newFileList);
+  }, [JSON.stringify(newFileList)]);
 
   return displayType === "file" ? (
     <Dragger
