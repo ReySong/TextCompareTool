@@ -5,15 +5,15 @@ import type { DataNode as ADDataNode } from "antd/es/tree";
 type TreeState = {
   srcTreeData: ADDataNode[];
   dstTreeData: ADDataNode[];
-  updateSrcFile: (inputDataNode: ADDataNode[]) => void;
-  updateDstFile: (inputDataNode: ADDataNode[]) => void;
+  updateSrcTreeData: (inputDataNode: ADDataNode[]) => void;
+  updateDstTreeData: (inputDataNode: ADDataNode[]) => void;
 };
 
 export const useTreeStore = create<TreeState>((set) => ({
   srcTreeData: [],
   dstTreeData: [],
-  updateSrcFile: (inputDataNode: ADDataNode[]) =>
+  updateSrcTreeData: (inputDataNode: ADDataNode[]) =>
     set(() => ({ srcTreeData: inputDataNode })),
-  updateDstFile: (inputDataNode: ADDataNode[]) =>
+  updateDstTreeData: (inputDataNode: ADDataNode[]) =>
     set(() => ({ dstTreeData: inputDataNode })),
 }));

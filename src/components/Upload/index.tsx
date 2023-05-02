@@ -2,9 +2,14 @@ import { InboxOutlined } from "@ant-design/icons";
 import { Upload as ADUpload } from "antd";
 
 import { SourceType } from "@/enum";
-import { useDirectoryStore, useFileStore } from "@/store";
+import { useDirectoryStore, useFileStore, useTreeStore } from "@/store";
 
-import type { UploadChangeParam, UploadProps } from "antd/es/upload";
+import type {
+  UploadChangeParam,
+  UploadProps,
+  UploadFile,
+} from "antd/es/upload";
+import type { DataNode as ADDataNode } from "antd/es/tree";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import type { UploadType } from "@/type";
 
@@ -39,6 +44,39 @@ export const Upload = (
       state.updateSrcFileList,
       state.updateDstFileList,
     ]);
+
+  const [updateSrcTreeData, updateDstTreeData] = useTreeStore((state) => [
+    state.updateSrcTreeData,
+    state.updateDstTreeData,
+  ]);
+
+  const transferFileListToTreeNode = (fileList: UploadFile[]) => {
+    const treeData = [] as ADDataNode[];
+    fileList.forEach((file) => {
+      const path = file?.originFileObj?.webkitRelativePath?.split("/") || [];
+      let curLevelTreeData = treeData;
+      path.forEach((part, index) => {
+        const isLeafNode = index === path.length - 1;
+        const existingNode = curLevelTreeData.find(
+          (item) => item.title === part
+        );
+        if (existingNode) {
+          curLevelTreeData = existingNode.children as ADDataNode[];
+        } else {
+          const newNode = {
+            title: part,
+            key: isLeafNode ? file.uid : part,
+            isLeaf: isLeafNode,
+            children: [],
+          } as ADDataNode;
+          curLevelTreeData.push(newNode);
+          curLevelTreeData = newNode.children as ADDataNode[];
+        }
+      });
+    });
+    return treeData;
+  };
+
   const customRequest = (options: UploadRequestOption) => {
     const { onSuccess } = options;
     onSuccess?.("上传成功");
@@ -57,8 +95,13 @@ export const Upload = (
         else updateDstFile(file);
       } else if (displayType === "directory") {
         setShouldDisplayUpload(!shouldDisplayUpload);
-        if (sourceType === SourceType.SOURCE) updateSrcFileList(fileList);
-        else updateDstFileList(fileList);
+        if (sourceType === SourceType.SOURCE) {
+          updateSrcFileList(fileList);
+          updateSrcTreeData(transferFileListToTreeNode(fileList));
+        } else {
+          updateDstFileList(fileList);
+          updateDstTreeData(transferFileListToTreeNode(fileList));
+        }
       }
     }
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import {
   Button as ADButton,
@@ -22,10 +22,6 @@ export const OperateArea = (props: {
   const { displayType, setDisplayType } = props;
   const [shouldDisplaySrcUpload, setShouldDisplaySrcUpload] = useState(true);
   const [shouldDisplayDstUpload, setShouldDisplayDstUpload] = useState(true);
-  const [srcFileList, dstFileList] = useDirectoryStore((state) => [
-    state.srcFileList,
-    state.dstFileList,
-  ]);
 
   const getDisplay = (name: string) => {
     if (displayType === "text") return "none";
@@ -58,11 +54,6 @@ export const OperateArea = (props: {
     else if (displayType === "directory")
       return "把文件夹拖入指定区域，完成上传，同样支持点击上传。";
     else return "";
-  }, [displayType]);
-
-  useEffect(() => {
-    if (displayType === "directory") {
-    }
   }, [displayType]);
 
   return (

@@ -1,11 +1,9 @@
 import { Tree as ADTree } from "antd";
 
-import { useFileStore, useTreeStore } from "@/store";
+import { useDirectoryStore, useFileStore, useTreeStore } from "@/store";
 import { SourceType } from "@/enum";
 
 import type { TreeProps as ADTreeProps } from "antd/es/tree";
-
-const { DirectoryTree } = ADTree;
 
 export const Tree = (
   props: ADTreeProps & {
@@ -17,25 +15,35 @@ export const Tree = (
     state.updateSrcFile,
     state.updateDstFile,
   ]);
+  const [srcFileList, dstFileList] = useDirectoryStore((state) => [
+    state.srcFileList,
+    state.dstFileList,
+  ]);
   const [srcTreeData, dstTreeData] = useTreeStore((state) => [
     state.srcTreeData,
     state.dstTreeData,
   ]);
 
-  const onSelect = (info: any) => {
+  const onSelect = (selectedKeys: React.Key[]) => {
     if (sourceType === SourceType.SOURCE) {
-      updateSrcFile(info);
+      const curFile = srcFileList.find((file) => {
+        return file.uid === selectedKeys[0]?.toString();
+      });
+      console.log("curFile:", curFile);
+      updateSrcFile(curFile!);
     } else {
-      updateDstFile(info);
+      const curFile = dstFileList.find((file) => {
+        return file.uid === selectedKeys[0]?.toString();
+      });
+      updateDstFile(curFile!);
     }
   };
 
   return (
     <div>
-      <DirectoryTree
-        {...props}
+      <ADTree
         showLine={true}
-        defaultExpandedKeys={["0-0-0"]}
+        defaultExpandParent
         onSelect={onSelect}
         treeData={sourceType === SourceType.SOURCE ? srcTreeData : dstTreeData}
       />
