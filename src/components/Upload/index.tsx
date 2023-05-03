@@ -71,6 +71,7 @@ export const Upload = (
           const newNode = {
             title: part,
             key: isLeafNode ? file.uid : part,
+            selectable: isLeafNode,
             isLeaf: isLeafNode,
             children: [],
           } as ADDataNode;

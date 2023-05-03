@@ -8,7 +8,7 @@ import {
 } from "antd";
 
 import { Upload, Tree } from "@/components";
-import { useFileStore } from "@/store";
+import { useDirectoryStore, useFileStore, useTreeStore } from "@/store";
 import { SourceType } from "@/enum";
 
 import type { UploadType } from "@/type";
@@ -23,6 +23,14 @@ export const OperateArea = (props: {
   const [shouldDisplaySrcUpload, setShouldDisplaySrcUpload] = useState(true);
   const [shouldDisplayDstUpload, setShouldDisplayDstUpload] = useState(true);
   const [removeAllFiles] = useFileStore((state) => [state.removeAllFiles]);
+  const [srcFileList, dstFileList] = useDirectoryStore((state) => [
+    state.srcFileList,
+    state.dstFileList,
+  ]);
+  const [srcTreeData, dstTreeData] = useTreeStore((state) => [
+    state.srcTreeData,
+    state.dstTreeData,
+  ]);
 
   const getDisplay = (name: string) => {
     if (displayType === "text") return "none";
@@ -124,7 +132,11 @@ export const OperateArea = (props: {
                 }}>
                 重新上传源文件夹
               </ADButton>
-              <Tree sourceType={SourceType.SOURCE} />
+              <Tree
+                sourceType={SourceType.SOURCE}
+                fileList={srcFileList}
+                treeData={srcTreeData}
+              />
             </div>
             <ADDivider />
             <div style={{ display: getDisplay("dstUpload") }}>
@@ -158,7 +170,11 @@ export const OperateArea = (props: {
                 }}>
                 重新上传目标文件夹
               </ADButton>
-              <Tree sourceType={SourceType.DESTINATION} />
+              <Tree
+                sourceType={SourceType.DESTINATION}
+                fileList={dstFileList}
+                treeData={dstTreeData}
+              />
             </div>
           </div>
         )}
