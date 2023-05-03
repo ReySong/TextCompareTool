@@ -1,17 +1,30 @@
 import { myersDiff } from "./core/myers-diff";
 
-import type { UploadFile } from "antd";
+import { Divider as ADDivider } from "antd";
 
-export function renderDiffStr(src: string, dst: string) {
-  const diffInfo = myersDiff(src, dst);
+import type { UploadFile } from "antd";
+import type { Mode } from "./type";
+
+export function renderDiffStr(src: string, dst: string, mode: Mode = "char") {
+  const diffInfo = myersDiff(src, dst, mode);
   const diffStr = diffInfo?.map(({ color, str }, i) => {
     return (
-      <span key={i} style={{ color }}>
-        {str}
+      <span key={i}>
+        {mode === "char" ? null : (
+          <>
+            <span>{i + 1}</span>
+            <ADDivider type="vertical" dashed />
+          </>
+        )}
+        <span style={{ color }}>{mode === "char" ? str : `${str}\n`}</span>
       </span>
     );
   });
-  return diffStr?.length ? diffStr : <span>{src}</span>;
+  return (
+    <div style={{ whiteSpace: "pre-wrap" }}>
+      {diffStr?.length ? diffStr : <span>{src}</span>}
+    </div>
+  );
 }
 
 //  由于上传文件夹时，每一个文件都会触发一次 onChange，但是清除上次上传的文件只需要清除一次，所以设置一个缓存

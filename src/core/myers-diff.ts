@@ -1,6 +1,6 @@
 import type { VK, VD, DiffInfo, Snake, Mode } from "@/type";
 
-export function myersDiff(src: string, dst: string, mode: Mode = "char") {
+export function myersDiff(src: string, dst: string, mode: Mode) {
   if (mode === "char") {
     const n = src.length,
       m = dst.length;
@@ -35,8 +35,10 @@ export function myersDiff(src: string, dst: string, mode: Mode = "char") {
     }
     return genDiffStr(genSnakes(vd, n, m, d), src, dst);
   } else if (mode === "line") {
-    const n = src.length,
-      m = dst.length;
+    const srcSplitedByLine = src.split("\n");
+    const dstSplitedByLine = dst.split("\n");
+    const n = srcSplitedByLine.length,
+      m = dstSplitedByLine.length;
     let d: number, k: number;
     //  记录每一个 k 能够到达的最远 x 值
     const vk = {
@@ -53,7 +55,7 @@ export function myersDiff(src: string, dst: string, mode: Mode = "char") {
         if (k === -d || (k !== d && vk[k - 1] < vk[k + 1])) x = vk[k + 1];
         else x = vk[k - 1] + 1;
         y = x - k;
-        while (x < n && y < m && src[x] === dst[y]) {
+        while (x < n && y < m && srcSplitedByLine[x] === dstSplitedByLine[y]) {
           ++x;
           ++y;
         }
@@ -61,12 +63,20 @@ export function myersDiff(src: string, dst: string, mode: Mode = "char") {
         vTmp[k] = x;
         if (x === n && y === m) {
           vd[d] = vTmp;
-          return genDiffStr(genSnakes(vd, n, m, d), src, dst);
+          return genDiffStr(
+            genSnakes(vd, n, m, d),
+            srcSplitedByLine,
+            dstSplitedByLine
+          );
         }
       }
       vd[d] = vTmp;
     }
-    return genDiffStr(genSnakes(vd, n, m, d), src, dst);
+    return genDiffStr(
+      genSnakes(vd, n, m, d),
+      srcSplitedByLine,
+      dstSplitedByLine
+    );
   }
 }
 
@@ -96,7 +106,11 @@ function genSnakes(vd: VD, n: number, m: number, d: number) {
   return snakes;
 }
 
-function genDiffStr(snakes: Snake[], src: string, dst: string) {
+function genDiffStr(
+  snakes: Snake[],
+  src: string | string[],
+  dst: string | string[]
+) {
   const res = [] as DiffInfo[];
   let resItem: DiffInfo = { color: "black", str: "" };
   let yOffset = 0;
@@ -104,7 +118,8 @@ function genDiffStr(snakes: Snake[], src: string, dst: string) {
   snakes.forEach(({ xPrev, xMid, xCur }, index) => {
     if (index === 0 && xPrev !== 0) {
       resItem.color = "black";
-      resItem.str = src.slice(0, xPrev);
+      if (Array.isArray(src)) resItem.str = src.slice(0, xPrev).join();
+      else resItem.str = src.slice(0, xPrev);
       yOffset += xPrev;
       res.push(JSON.parse(JSON.stringify(resItem)));
     }
@@ -112,21 +127,20 @@ function genDiffStr(snakes: Snake[], src: string, dst: string) {
     if (xMid - xPrev === 1) {
       resItem.color = "red";
       resItem.str = src[xPrev];
-      res.push(JSON.parse(JSON.stringify(resItem)));
+      resItem.str !== "" && res.push(JSON.parse(JSON.stringify(resItem)));
     } else {
       resItem.color = "green";
       resItem.str = dst[yOffset];
-      res.push(JSON.parse(JSON.stringify(resItem)));
+      resItem.str !== "" && res.push(JSON.parse(JSON.stringify(resItem)));
       yOffset++;
     }
-
     resItem.color = "black";
     resItem.str = "";
     for (let i = 0; i < xCur - xMid; i++) {
       resItem.str += src[xMid + i];
       yOffset++;
     }
-    res.push(JSON.parse(JSON.stringify(resItem)));
+    resItem.str !== "" && res.push(JSON.parse(JSON.stringify(resItem)));
   });
   return res;
 }

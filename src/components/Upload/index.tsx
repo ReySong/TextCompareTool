@@ -128,6 +128,7 @@ export const Upload = (
   };
 
   useEffect(() => {
+    if (!newFileList.length) return;
     if (sourceType === SourceType.SOURCE) {
       const res = fileListMinus(newFileList, srcFileList);
       updateSrcFileList(res);
@@ -142,6 +143,7 @@ export const Upload = (
 
   return displayType === "file" ? (
     <Dragger
+      maxCount={1}
       beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}

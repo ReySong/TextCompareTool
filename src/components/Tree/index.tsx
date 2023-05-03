@@ -17,6 +17,8 @@ export const Tree = (
   }
 ) => {
   const { sourceType, fileList, treeData } = props;
+  const [innerFileList, setInnerFileList] = useState<UploadFile[]>([]);
+  const [innerTreeData, setInnderTreeData] = useState<DataNode[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
 
   const [updateSrcFile, updateDstFile] = useFileStore((state) => [
@@ -25,7 +27,7 @@ export const Tree = (
   ]);
 
   const onSelect = (selectedKeys: React.Key[]) => {
-    const curFile = fileList.find((file) => {
+    const curFile = innerFileList.find((file) => {
       return file.uid === selectedKeys[0]?.toString();
     });
     if (sourceType === SourceType.SOURCE) {
@@ -40,21 +42,31 @@ export const Tree = (
   };
 
   useEffect(() => {
-    setExpandedKeys(
-      treeData.map((node) => {
-        return node.key;
-      })
-    );
+    if (fileList.length) {
+      setInnerFileList([...fileList]);
+    }
+  }, [JSON.stringify(fileList)]);
+
+  useEffect(() => {
+    if (treeData.length) {
+      setInnderTreeData([...treeData]);
+      setExpandedKeys(
+        treeData.map((node) => {
+          return node.key;
+        })
+      );
+    }
   }, [JSON.stringify(treeData)]);
 
   return (
-    <DirectoryTree
-      showLine={true}
-      onSelect={onSelect}
-      onExpand={onExpand}
-      motion={{ delay: 0, duration: 0.3 }}
-      expandedKeys={expandedKeys}
-      treeData={treeData}
-    />
+    <>
+      <DirectoryTree
+        showLine={true}
+        onSelect={onSelect}
+        onExpand={onExpand}
+        expandedKeys={expandedKeys}
+        treeData={innerTreeData}
+      />
+    </>
   );
 };

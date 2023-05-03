@@ -5,6 +5,7 @@ import { renderDiffStr } from "@/utils";
 import { useFileStore } from "@/store";
 
 import type { UploadType } from "@/type";
+import { useDiffModeStore } from "@/store/stores/diffMode";
 
 const { TextArea } = ADInput;
 
@@ -22,36 +23,43 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
     state.dstFile,
   ]);
 
-  useEffect(() => {
-    const getFileContents = async (fileArr: (File | undefined)[]) => {
-      return Promise.all(
-        fileArr.map((file) => {
-          if (!file) return "";
-          const reader = new FileReader();
-          try {
-            return new Promise<string>((resolve) => {
-              file && reader.readAsText(file);
-              reader.onload = function () {
-                resolve(this.result?.toString() || "");
-              };
-            });
-          } catch (e: any) {
-            ADMessage.error(e.message);
-            return "";
-          }
-        })
-      );
-    };
+  const [diffMode] = useDiffModeStore((state) => [state.diffMode]);
 
-    getFileContents([srcFile?.originFileObj, dstFile?.originFileObj]).then(
-      ([srcFileContent, dstFileContent]) => {
-        setDiffStrFromFile(renderDiffStr(srcFileContent, dstFileContent));
-      }
-    );
-  }, [srcFile, dstFile]);
+  useEffect(() => {
+    if (displayType === "text") genOnlineDiffStr(src, dst);
+    else {
+      const getFileContents = async (fileArr: (File | undefined)[]) => {
+        return Promise.all(
+          fileArr.map((file) => {
+            if (!file) return "";
+            const reader = new FileReader();
+            try {
+              return new Promise<string>((resolve) => {
+                file && reader.readAsText(file);
+                reader.onload = function () {
+                  resolve(this.result?.toString() || "");
+                };
+              });
+            } catch (e: any) {
+              ADMessage.error(e.message);
+              return "";
+            }
+          })
+        );
+      };
+
+      getFileContents([srcFile?.originFileObj, dstFile?.originFileObj]).then(
+        ([srcFileContent, dstFileContent]) => {
+          setDiffStrFromFile(
+            renderDiffStr(srcFileContent, dstFileContent, diffMode)
+          );
+        }
+      );
+    }
+  }, [srcFile, dstFile, diffMode]);
 
   const genOnlineDiffStr = (src: string, dst: string) => {
-    setOnlineDiff(renderDiffStr(src, dst));
+    setOnlineDiff(renderDiffStr(src, dst, diffMode));
   };
 
   return displayType === "text" ? (
@@ -71,9 +79,9 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
           genOnlineDiffStr(src, e.target.value);
         }}
       />
-      <p>{onlineDiff}</p>
+      <div>{onlineDiff}</div>
     </div>
   ) : (
-    <p style={{ height: "100%" }}>{diffStrFromFile}</p>
+    <div style={{ height: "100%" }}>{diffStrFromFile}</div>
   );
 };

@@ -11,7 +11,8 @@ import { Upload, Tree } from "@/components";
 import { useDirectoryStore, useFileStore, useTreeStore } from "@/store";
 import { SourceType } from "@/enum";
 
-import type { UploadType } from "@/type";
+import type { Mode, UploadType } from "@/type";
+import { useDiffModeStore } from "@/store/stores/diffMode";
 
 const { Paragraph } = ADTypography;
 
@@ -31,6 +32,7 @@ export const OperateArea = (props: {
     state.srcTreeData,
     state.dstTreeData,
   ]);
+  const [setDiffMode] = useDiffModeStore((state) => [state.setDiffMode]);
 
   const getDisplay = (name: string) => {
     if (displayType === "text") return "none";
@@ -68,16 +70,27 @@ export const OperateArea = (props: {
   return (
     <div>
       <div>
-        <div style={{ marginBottom: "5px" }}>
+        <div style={{ marginBottom: "10px" }}>
           <ADRadio.Group
             defaultValue={"text"}
             onChange={(e) => {
               removeAllFiles();
-              setDisplayType(() => e.target?.value);
+              setDisplayType(e.target?.value);
             }}>
             <ADRadio.Button value={"text"}>在线文本比较</ADRadio.Button>
             <ADRadio.Button value={"file"}>上传文件比较</ADRadio.Button>
             <ADRadio.Button value={"directory"}>上传文件夹比较</ADRadio.Button>
+          </ADRadio.Group>
+        </div>
+        <div style={{ marginBottom: "8px" }}>
+          <ADRadio.Group
+            defaultValue={"char"}
+            onChange={(e) => {
+              setDiffMode(e.target?.value as Mode);
+              
+            }}>
+            <ADRadio.Button value={"char"}>字符比较</ADRadio.Button>
+            <ADRadio.Button value={"line"}>行比较</ADRadio.Button>
           </ADRadio.Group>
         </div>
 
