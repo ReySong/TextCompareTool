@@ -25,4 +25,4 @@ dist-electron
 *.sw?
 
 # build files
-TextCompareTools/*
+TextCompareTool/*

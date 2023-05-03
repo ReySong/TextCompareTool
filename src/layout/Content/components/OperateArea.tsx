@@ -70,7 +70,7 @@ export const OperateArea = (props: {
   return (
     <div>
       <div>
-        <div style={{ marginBottom: "10px" }}>
+        <div style={{ marginBottom: "20px" }}>
           <ADRadio.Group
             defaultValue={"text"}
             onChange={(e) => {
@@ -82,12 +82,11 @@ export const OperateArea = (props: {
             <ADRadio.Button value={"directory"}>上传文件夹比较</ADRadio.Button>
           </ADRadio.Group>
         </div>
-        <div style={{ marginBottom: "8px" }}>
+        <div style={{ marginBottom: "20px" }}>
           <ADRadio.Group
             defaultValue={"char"}
             onChange={(e) => {
               setDiffMode(e.target?.value as Mode);
-              
             }}>
             <ADRadio.Button value={"char"}>字符比较</ADRadio.Button>
             <ADRadio.Button value={"line"}>行比较</ADRadio.Button>

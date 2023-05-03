@@ -33,6 +33,8 @@ export const Upload = (
     uploadText,
     setShouldDisplayUpload,
   } = props;
+  const acceptStr =
+    "text/*,.json,.tsx,.d.ts,.ts,.js,.jsx,.yaml,.xml,.md,.css,.less,.sass";
   const [newFileList, setNewFileList] = useState<UploadFile[]>([]);
   const [srcFile, dstFile, updateSrcFile, updateDstFile, removeAllFiles] =
     useFileStore((state) => [
@@ -144,6 +146,7 @@ export const Upload = (
   return displayType === "file" ? (
     <Dragger
       maxCount={1}
+      accept={acceptStr}
       beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
@@ -156,6 +159,7 @@ export const Upload = (
     </Dragger>
   ) : (
     <Dragger
+      accept={acceptStr}
       beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
