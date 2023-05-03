@@ -7,9 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build-web": "tsc && vite build",
-    "build-win": "electron-packager . TextCompareTool --platform=win32 --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.ico",
-    "build-linux": "electron-packager . TextCompareTool --platform=linux --electron-version=10.0.0 -no-sandbox --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.png",
-    "build-mac": "electron-packager . TextCompareTool --platform=darwin --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)' --icon=assets/img/logo.ico"
+    "build-win": "electron-packager . TextCompareToolWin --platform=win32 --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)'",
+    "build-linux": "electron-packager . TextCompareToolLinux --platform=linux --electron-version=10.0.0 -no-sandbox --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)'",
+    "build-mac": "electron-packager . TextCompareToolMac --platform=darwin --electron-version=10.0.0 --arch=x64 --download.mirrorOptions.mirror=https://npm.taobao.org/mirrors/electron/ --asar --app-version=0.0.0 --build-version=0.0.0 --out=TextCompareTool --overwrite --no-package-manager --ignore='(.git)'"
   },
   "dependencies": {
     "@ant-design/icons": "^4.8.0",
