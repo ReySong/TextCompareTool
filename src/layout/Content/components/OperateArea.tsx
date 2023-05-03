@@ -125,9 +125,8 @@ export const OperateArea = (props: {
                 重新上传源文件夹
               </ADButton>
               <Tree sourceType={SourceType.SOURCE} />
-              <ADDivider />
             </div>
-
+            <ADDivider />
             <div style={{ display: getDisplay("dstUpload") }}>
               <span>
                 {(() => {
