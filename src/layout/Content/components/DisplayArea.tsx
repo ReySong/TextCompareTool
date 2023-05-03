@@ -9,8 +9,12 @@ import { useDiffModeStore } from "@/store/stores/diffMode";
 
 const { TextArea } = ADInput;
 
-export const DisplayArea = (props: { displayType: UploadType }) => {
-  const { displayType } = props;
+export const DisplayArea = (
+  props: { displayType: UploadType } & {
+    containerHeight: number;
+  }
+) => {
+  const { containerHeight, displayType } = props;
   const [src, setSrc] = useState("");
   const [dst, setDst] = useState("");
   const [onlineDiff, setOnlineDiff] = useState<JSX.Element | JSX.Element[]>();
@@ -65,7 +69,7 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
   return displayType === "text" ? (
     <div>
       <TextArea
-        style={{ marginBottom: "10px" }}
+        style={{ marginBottom: "10px", height: (containerHeight - 80) / 2 }}
         placeholder="请输入源文本"
         onChange={(e) => {
           setSrc(e.target.value);
@@ -73,6 +77,7 @@ export const DisplayArea = (props: { displayType: UploadType }) => {
         }}
       />
       <TextArea
+        style={{ height: (containerHeight - 80) / 2 }}
         placeholder="请输入目标文本"
         onChange={(e) => {
           setDst(e.target.value);
