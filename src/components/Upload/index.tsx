@@ -36,14 +36,14 @@ export const Upload = (
   const acceptStr =
     "text/*,.json,.tsx,.d.ts,.ts,.js,.jsx,.yaml,.xml,.md,.css,.less,.sass";
   const [newFileList, setNewFileList] = useState<UploadFile[]>([]);
-  const [srcFile, dstFile, updateSrcFile, updateDstFile, removeAllFiles] =
-    useFileStore((state) => [
+  const [srcFile, dstFile, updateSrcFile, updateDstFile] = useFileStore(
+    (state) => [
       state.srcFile,
       state.dstFile,
       state.updateSrcFile,
       state.updateDstFile,
-      state.removeAllFiles,
-    ]);
+    ]
+  );
   const [srcFileList, dstFileList, updateSrcFileList, updateDstFileList] =
     useDirectoryStore((state) => [
       state.srcFileList,
@@ -91,18 +91,11 @@ export const Upload = (
     else onError?.(new Error("上传失败"));
   };
 
-  const onBeforeUpload = () => {
-    removeAllFiles();
-  };
-
   const onUploadChange: (info: UploadChangeParam) => void = ({
     file,
     fileList,
   }) => {
     const { originFileObj } = file;
-
-    //  仅用于上传单个文件时判断
-    const isRemoveWhenFile = fileList.length === 0;
 
     let isRemoveWhenDirectory = false;
     if (sourceType === SourceType.SOURCE)
@@ -111,7 +104,6 @@ export const Upload = (
 
     if (originFileObj) {
       if (displayType === "file") {
-        if (isRemoveWhenFile) return;
         if (sourceType === SourceType.SOURCE) updateSrcFile(file);
         else updateDstFile(file);
       } else if (displayType === "directory") {
@@ -147,7 +139,6 @@ export const Upload = (
     <Dragger
       maxCount={1}
       accept={acceptStr}
-      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
       customRequest={customRequest}>
@@ -160,7 +151,6 @@ export const Upload = (
   ) : (
     <Dragger
       accept={acceptStr}
-      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
       customRequest={customRequest}
