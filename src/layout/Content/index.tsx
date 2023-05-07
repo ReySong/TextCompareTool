@@ -37,7 +37,7 @@ export const Content: FC = () => {
         <Col span={12}>
           <Card style={{ height: documentHeight - 20, overflow: "scroll" }}>
             <DisplayArea
-              containerHeight={documentHeight}
+              containerHeight={documentHeight - 20}
               displayType={displayType}
             />
           </Card>

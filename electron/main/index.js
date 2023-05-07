@@ -17,7 +17,11 @@ const createWindow = () => {
     win.webContents.openDevTools();
   } else {
     win.loadURL(
-      `file://${path.join(__dirname, "../../", "dist", "index.html")}`
+      url.format({
+        pathname: path.join(__dirname, "../../dist/index.html"), // 注意这里修改
+        protocol: "file:",
+        slashes: true,
+      })
     );
   }
 };

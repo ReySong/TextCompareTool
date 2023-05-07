@@ -69,7 +69,7 @@ export const DisplayArea = (
   return displayType === "text" ? (
     <div>
       <TextArea
-        style={{ marginBottom: "10px", height: (containerHeight - 80) / 2 }}
+        style={{ marginBottom: "10px", height: (containerHeight - 40) / 3 }}
         placeholder="请输入源文本"
         onChange={(e) => {
           setSrc(e.target.value);
@@ -77,14 +77,14 @@ export const DisplayArea = (
         }}
       />
       <TextArea
-        style={{ height: (containerHeight - 80) / 2 }}
+        style={{ height: (containerHeight - 40) / 3 }}
         placeholder="请输入目标文本"
         onChange={(e) => {
           setDst(e.target.value);
           genOnlineDiffStr(src, e.target.value);
         }}
       />
-      <div>{onlineDiff}</div>
+      <div style={{ marginTop: "10px" }}>{onlineDiff}</div>
     </div>
   ) : (
     <div style={{ height: "100%" }}>{diffStrFromFile}</div>
