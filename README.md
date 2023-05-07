@@ -15,7 +15,8 @@ npm run dev
 ### 构建
 
 ```cmd
-npm run build-win
-npm run build-mac
-npm run build-linux
+<!-- web 项目打包 -->
+npm run build-web
+<!-- 客户端打包，打包的平台需要自己去 package.json 中配置 -->
+npm run make
 ```

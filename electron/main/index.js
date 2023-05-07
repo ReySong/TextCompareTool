@@ -18,7 +18,7 @@ const createWindow = () => {
   } else {
     win.loadURL(
       url.format({
-        pathname: path.join(__dirname, "../../dist/index.html"), // 注意这里修改
+        pathname: path.join(__dirname, "../../dist/index.html"),
         protocol: "file:",
         slashes: true,
       })
