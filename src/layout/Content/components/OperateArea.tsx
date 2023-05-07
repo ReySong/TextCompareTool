@@ -23,7 +23,10 @@ export const OperateArea = (props: {
   const { displayType, setDisplayType } = props;
   const [shouldDisplaySrcUpload, setShouldDisplaySrcUpload] = useState(true);
   const [shouldDisplayDstUpload, setShouldDisplayDstUpload] = useState(true);
-  const [removeAllFiles] = useFileStore((state) => [state.removeAllFiles]);
+  const [removeSrcFile, removeDstFile] = useFileStore((state) => [
+    state.removeSrcFile,
+    state.removeDstFile,
+  ]);
   const [srcFileList, dstFileList] = useDirectoryStore((state) => [
     state.srcFileList,
     state.dstFileList,
@@ -74,7 +77,8 @@ export const OperateArea = (props: {
           <ADRadio.Group
             defaultValue={"text"}
             onChange={(e) => {
-              removeAllFiles();
+              removeSrcFile();
+              removeDstFile();
               setDisplayType(e.target?.value);
             }}>
             <ADRadio.Button value={"text"}>在线文本比较</ADRadio.Button>

@@ -7,7 +7,8 @@ type FileState = {
   dstFile: UploadFile | null;
   updateSrcFile: (inputFile: UploadFile | null) => void;
   updateDstFile: (inputFile: UploadFile | null) => void;
-  removeAllFiles: () => void;
+  removeSrcFile: () => void;
+  removeDstFile: () => void;
 };
 
 export const useFileStore = create<FileState>((set) => ({
@@ -17,5 +18,6 @@ export const useFileStore = create<FileState>((set) => ({
     set(() => ({ srcFile: inputFile })),
   updateDstFile: (inputFile: UploadFile | null) =>
     set(() => ({ dstFile: inputFile })),
-  removeAllFiles: () => set(() => ({ srcFile: null, dstFile: null })),
+  removeSrcFile: () => set(() => ({ srcFile: null })),
+  removeDstFile: () => set(() => ({ dstFile: null })),
 }));

@@ -36,14 +36,21 @@ export const Upload = (
   const acceptStr =
     "text/*,.json,.tsx,.d.ts,.ts,.js,.jsx,.yaml,.xml,.md,.css,.less,.sass";
   const [newFileList, setNewFileList] = useState<UploadFile[]>([]);
-  const [srcFile, dstFile, updateSrcFile, updateDstFile] = useFileStore(
-    (state) => [
-      state.srcFile,
-      state.dstFile,
-      state.updateSrcFile,
-      state.updateDstFile,
-    ]
-  );
+  const [
+    srcFile,
+    dstFile,
+    updateSrcFile,
+    updateDstFile,
+    removeSrcFile,
+    removeDstFile,
+  ] = useFileStore((state) => [
+    state.srcFile,
+    state.dstFile,
+    state.updateSrcFile,
+    state.updateDstFile,
+    state.removeSrcFile,
+    state.removeDstFile,
+  ]);
   const [srcFileList, dstFileList, updateSrcFileList, updateDstFileList] =
     useDirectoryStore((state) => [
       state.srcFileList,
@@ -91,11 +98,19 @@ export const Upload = (
     else onError?.(new Error("上传失败"));
   };
 
+  const onBeforeUpload = () => {
+    if (sourceType === SourceType.SOURCE) removeSrcFile();
+    else removeDstFile();
+  };
+
   const onUploadChange: (info: UploadChangeParam) => void = ({
     file,
     fileList,
   }) => {
     const { originFileObj } = file;
+
+    //  仅用于文件比较时
+    let isRemoveWhenCompareByFile = fileList.length === 0;
 
     let isRemoveWhenDirectory = false;
     if (sourceType === SourceType.SOURCE)
@@ -104,6 +119,7 @@ export const Upload = (
 
     if (originFileObj) {
       if (displayType === "file") {
+        if (isRemoveWhenCompareByFile) return;
         if (sourceType === SourceType.SOURCE) updateSrcFile(file);
         else updateDstFile(file);
       } else if (displayType === "directory") {
@@ -139,6 +155,7 @@ export const Upload = (
     <Dragger
       maxCount={1}
       accept={acceptStr}
+      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
       customRequest={customRequest}>
@@ -151,6 +168,7 @@ export const Upload = (
   ) : (
     <Dragger
       accept={acceptStr}
+      beforeUpload={onBeforeUpload}
       onChange={onUploadChange}
       onRemove={onUploadRemove}
       customRequest={customRequest}

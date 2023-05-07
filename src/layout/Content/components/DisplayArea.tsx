@@ -54,8 +54,6 @@ export const DisplayArea = (
 
       getFileContents([srcFile?.originFileObj, dstFile?.originFileObj]).then(
         ([srcFileContent, dstFileContent]) => {
-          console.log("srcFileContent:", srcFileContent);
-          console.log("dstFileContent:", dstFileContent);
           setDiffStrFromFile(
             renderDiffStr(srcFileContent, dstFileContent, diffMode)
           );
