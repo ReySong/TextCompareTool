@@ -66,15 +66,3 @@ export const fileListMinus = (
   ] = res;
   return res;
 };
-
-export function splitString(srcStr: string, dstStr: string) {
-  const srcChunks = [] as string[],
-    dstChunks = [] as string[];
-  return [srcChunks, dstChunks];
-}
-
-export function mergeDiffInfo(diffInfoArr: DiffInfo[][]) {
-  return diffInfoArr.reduce((prev, cur) => {
-    return prev.concat(cur);
-  }, []);
-}
