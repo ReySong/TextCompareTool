@@ -9,20 +9,13 @@ const createWindow = () => {
     webPreferences: {
       contextIsolation: true, // 是否开启隔离上下文
       nodeIntegration: true, // 渲染进程使用Node API
-      preload: path.join(__dirname, "../preload/index.js"), // 需要引用js文件
     },
   });
   if (ENV.isDev) {
     win.loadURL("http://localhost:5173");
     win.webContents.openDevTools();
   } else {
-    win.loadURL(
-      url.format({
-        pathname: path.join(__dirname, "../../dist/index.html"),
-        protocol: "file:",
-        slashes: true,
-      })
-    );
+    win.loadFile(path.join(__dirname, "index.html"));
   }
 };
 

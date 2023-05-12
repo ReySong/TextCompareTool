@@ -3,9 +3,12 @@ import { Input as ADInput, message as ADMessage } from "antd";
 
 import { renderDiffStr } from "@/utils";
 import { useFileStore } from "@/store";
+import { useDiffModeStore } from "@/store/stores/diffMode";
+
+import DiffWorker from "../../../worker?worker";
 
 import type { UploadType } from "@/type";
-import { useDiffModeStore } from "@/store/stores/diffMode";
+import { myersDiff } from "@/core/myers-diff";
 
 const { TextArea } = ADInput;
 
@@ -21,13 +24,14 @@ export const DisplayArea = (
   const [diffStrFromFile, setDiffStrFromFile] = useState<
     JSX.Element | JSX.Element[]
   >();
-
   const [srcFile, dstFile] = useFileStore((state) => [
     state.srcFile,
     state.dstFile,
   ]);
 
   const [diffMode] = useDiffModeStore((state) => [state.diffMode]);
+  const [genStart, setGenStart] = useState(0);
+  const [genEnd, setGenEnd] = useState(0);
 
   useEffect(() => {
     if (displayType === "text") genOnlineDiffStr(src, dst);
@@ -51,19 +55,34 @@ export const DisplayArea = (
           })
         );
       };
-
       getFileContents([srcFile?.originFileObj, dstFile?.originFileObj]).then(
         ([srcFileContent, dstFileContent]) => {
-          setDiffStrFromFile(
-            renderDiffStr(srcFileContent, dstFileContent, diffMode)
-          );
+          setGenStart(performance.now());
+
+          const worker = new DiffWorker();
+          worker.onmessage = (event) => {
+            const { data } = event;
+            setDiffStrFromFile(renderDiffStr(data, diffMode));
+            setGenEnd(performance.now());
+          };
+          worker.postMessage([srcFileContent, dstFileContent, diffMode]);
         }
       );
     }
   }, [srcFile, dstFile, diffMode]);
 
+  useEffect(() => {
+    const genTime = genEnd - genStart;
+    if (!genTime) return;
+    // console.log(`算法耗时：${genTime} ms`);
+
+    const renderTime = performance.now() - genEnd;
+    // console.log(`渲染耗时：${renderTime} ms`);
+  }, [genEnd]);
+
   const genOnlineDiffStr = (src: string, dst: string) => {
-    setOnlineDiff(renderDiffStr(src, dst, diffMode));
+    const diffInfo = myersDiff(src, dst, diffMode) || [];
+    setOnlineDiff(renderDiffStr(diffInfo, diffMode));
   };
 
   return displayType === "text" ? (

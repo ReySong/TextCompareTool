@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import { Upload as ADUpload } from "antd";
 
 import { SourceType } from "@/enum";
+import { fileListMinus } from "@/utils";
 import { useDirectoryStore, useFileStore, useTreeStore } from "@/store";
 
 import type {
@@ -12,8 +14,6 @@ import type {
 import type { DataNode as ADDataNode } from "antd/es/tree";
 import type { UploadRequestOption } from "rc-upload/lib/interface";
 import type { UploadType } from "@/type";
-import { fileListMinus } from "@/utils";
-import { useEffect, useState } from "react";
 
 const { Dragger } = ADUpload;
 
@@ -138,7 +138,7 @@ export const Upload = (
   };
 
   useEffect(() => {
-    if (!newFileList.length) return;
+    if (!newFileList?.length) return;
     if (sourceType === SourceType.SOURCE) {
       const res = fileListMinus(newFileList, srcFileList);
       updateSrcFileList(res);

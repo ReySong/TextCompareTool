@@ -21,6 +21,6 @@ export default defineConfig({
     rollupOptions: {
       input: "index.html",
     },
-    emptyOutDir: false, // 默认情况下，若 outDir 在 root 目录下，则 Vite 会在构建时清空该目录
+    emptyOutDir: true, // 默认情况下，若 outDir 在 root 目录下，则 Vite 会在构建时清空该目录
   },
 });
