@@ -21,7 +21,7 @@ export function renderDiffStr(diffInfo: DiffInfo[], mode: Mode = "char") {
   });
   return (
     <div style={{ whiteSpace: "pre-wrap" }}>
-      {diffStr?.length ? diffStr : <span>{""}</span>}
+      {diffStr?.length ? diffStr : ""}
     </div>
   );
 }

@@ -118,7 +118,7 @@ function genDiffStr(
   snakes.forEach(({ xPrev, xMid, xCur }, index) => {
     if (index === 0 && xPrev !== 0) {
       resItem.color = "black";
-      if (Array.isArray(src)) resItem.str = src.slice(0, xPrev).join();
+      if (Array.isArray(src)) resItem.str = src.slice(0, xPrev).join("");
       else resItem.str = src.slice(0, xPrev);
       yOffset += xPrev;
       res.push(JSON.parse(JSON.stringify(resItem)));
